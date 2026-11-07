@@ -120,6 +120,11 @@ A task can activate stack-level defenses by placing a `stack.env` file in its ta
 
 ### 1. Configure the model endpoint
 
+**Note**: You need to first uncompress the `lib60870-2.4.1.rar` file to the code folder:
+```bash
+unrar x lib60870-2.4.1.rar
+```
+
 Export the Anthropic-compatible settings used inside the attacker container (or modify `.env`; Docker Compose loads `.env` automatically):
 
 ```bash
