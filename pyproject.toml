@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "power-attacker-scada"
+version = "0.1.0"
+description = "Python-based SCADA and attacker simulation for the IEC 60870-5-104 style grid described in the project prompt"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+]
+
+[tool.setuptools]
+packages = ["power_attacker"]

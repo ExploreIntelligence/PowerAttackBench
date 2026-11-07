@@ -1,0 +1,28 @@
+# Secrets and local environment
+.env
+
+# Runtime artifacts (regenerated per task run)
+traces/
+evaluations/
+
+# Editor / tooling
+.trae/
+.vscode/
+.idea/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Host-built C artifacts (rebuilt inside the image)
+real_iec104/scada_server
+real_iec104/scada_client
+lib60870-2.4.1/lib60870-C/build/
+
+# Docs / images not needed at runtime
+docs/
+*.jpeg
+*.jpg
+*.png
+NOTE-dt.md

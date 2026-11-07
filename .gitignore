@@ -1,0 +1,9 @@
+.env
+__pycache__/
+.pytest_cache/
+traces/
+evaluations/
+# Native build outputs (rebuilt inside the image)
+real_iec104/scada_server
+real_iec104/scada_client
+lib60870-2.4.1/lib60870-C/build/

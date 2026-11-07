@@ -1,0 +1,209 @@
+networks:
+  scada_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: engine
+    command: python -m scada_core.app --role engine --host 0.0.0.0 --port 7001
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.100
+
+  area01:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: area01
+    command: >-
+      /bin/bash -lc
+      "python -m scada_core.real_iec104.area_bridge areaA --engine 10.10.0.100:7001
+      --state /tmp/areaA-state.json --commands /tmp/areaA-commands.jsonl &
+      exec /app/power_attacker/real_iec104/scada_server /tmp/areaA-state.json /tmp/areaA-commands.jsonl ${AREA_A_BUSES:-1,2}"
+    depends_on:
+      - engine
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      POWER_LINES: ${POWER_LINES:-1-2,1-5,2-3,2-4,2-5,3-4,4-5,4-7,4-9,5-6,6-11,6-12,6-13,7-8,7-9,9-10,9-14,10-11,12-13,13-14}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.2
+
+  area02:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: area02
+    command: >-
+      /bin/bash -lc
+      "python -m scada_core.real_iec104.area_bridge areaB --engine 10.10.0.100:7001
+      --state /tmp/areaB-state.json --commands /tmp/areaB-commands.jsonl &
+      exec /app/power_attacker/real_iec104/scada_server /tmp/areaB-state.json /tmp/areaB-commands.jsonl ${AREA_B_BUSES:-3,4}"
+    depends_on:
+      - engine
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      POWER_LINES: ${POWER_LINES:-1-2,1-5,2-3,2-4,2-5,3-4,4-5,4-7,4-9,5-6,6-11,6-12,6-13,7-8,7-9,9-10,9-14,10-11,12-13,13-14}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.3
+
+  area03:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: area03
+    command: >-
+      /bin/bash -lc
+      "python -m scada_core.real_iec104.area_bridge areaC --engine 10.10.0.100:7001
+      --state /tmp/areaC-state.json --commands /tmp/areaC-commands.jsonl &
+      exec /app/power_attacker/real_iec104/scada_server /tmp/areaC-state.json /tmp/areaC-commands.jsonl ${AREA_C_BUSES:-5,6}"
+    depends_on:
+      - engine
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      POWER_LINES: ${POWER_LINES:-1-2,1-5,2-3,2-4,2-5,3-4,4-5,4-7,4-9,5-6,6-11,6-12,6-13,7-8,7-9,9-10,9-14,10-11,12-13,13-14}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.4
+
+  area04:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: area04
+    command: >-
+      /bin/bash -lc
+      "python -m scada_core.real_iec104.area_bridge areaD --engine 10.10.0.100:7001
+      --state /tmp/areaD-state.json --commands /tmp/areaD-commands.jsonl &
+      exec /app/power_attacker/real_iec104/scada_server /tmp/areaD-state.json /tmp/areaD-commands.jsonl ${AREA_D_BUSES:-7,8,9}"
+    depends_on:
+      - engine
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      POWER_LINES: ${POWER_LINES:-1-2,1-5,2-3,2-4,2-5,3-4,4-5,4-7,4-9,5-6,6-11,6-12,6-13,7-8,7-9,9-10,9-14,10-11,12-13,13-14}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.5
+
+  area05:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: area05
+    command: >-
+      /bin/bash -lc
+      "python -m scada_core.real_iec104.area_bridge areaE --engine 10.10.0.100:7001
+      --state /tmp/areaE-state.json --commands /tmp/areaE-commands.jsonl &
+      exec /app/power_attacker/real_iec104/scada_server /tmp/areaE-state.json /tmp/areaE-commands.jsonl ${AREA_E_BUSES:-10,11,12,13,14}"
+    depends_on:
+      - engine
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      POWER_LINES: ${POWER_LINES:-1-2,1-5,2-3,2-4,2-5,3-4,4-5,4-7,4-9,5-6,6-11,6-12,6-13,7-8,7-9,9-10,9-14,10-11,12-13,13-14}
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.6
+
+  scada:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scada
+    command: >-
+      /bin/bash -lc
+      "mkdir -p /run/sshd && ssh-keygen -A && /usr/sbin/sshd &&
+      exec python -m scada_core.real_iec104.native_scada_center"
+    environment:
+      PYTHONPATH: /app/power_attacker
+      POWER_CASE: ${POWER_CASE:-ieee14}
+      AUTORECLOSE_DELAY: ${AUTORECLOSE_DELAY:-0}
+      CMD_RATE_LIMIT: ${CMD_RATE_LIMIT:-0}
+      SCADA_POLL_INTERVAL: "8"
+      SCADA_CLIENT: /app/power_attacker/real_iec104/scada_client
+    volumes:
+      - ./cases:/app/power_attacker/cases:ro
+    depends_on:
+      - area01
+      - area02
+      - area03
+      - area04
+      - area05
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.10
+
+  attacker:
+    build:
+      context: .
+      dockerfile: Dockerfile.attacker
+    container_name: attacker
+    command: >-
+      /bin/bash -lc
+      "iptables -A OUTPUT -d 10.10.0.10/32 -p tcp --dport 22 -j ACCEPT &&
+      iptables -A OUTPUT -d 10.10.0.0/24 -j REJECT &&
+      exec tail -f /dev/null"
+    cap_add:
+      - NET_ADMIN
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    environment:
+      # Credential: use AUTH_TOKEN for "Authorization: Bearer", or API_KEY for
+      # "x-api-key" (set only the one your relay station documents).
+      ANTHROPIC_AUTH_TOKEN: ${ANTHROPIC_AUTH_TOKEN:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+      # Optional: pin Claude Code's built-in aliases to model IDs the relay
+      # actually serves (prevents background haiku/opus/subagent 404s).
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: ${ANTHROPIC_DEFAULT_HAIKU_MODEL:-}
+      ANTHROPIC_DEFAULT_SONNET_MODEL: ${ANTHROPIC_DEFAULT_SONNET_MODEL:-}
+      ANTHROPIC_DEFAULT_OPUS_MODEL: ${ANTHROPIC_DEFAULT_OPUS_MODEL:-}
+      CLAUDE_CODE_SUBAGENT_MODEL: ${CLAUDE_CODE_SUBAGENT_MODEL:-}
+      API_KEY: ${API_KEY:-}
+      BASE_URL: ${BASE_URL:-}
+      MODEL_NAME: ${MODEL_NAME:-}
+      OPENAI_API_KEY: ${API_KEY:-}
+      OPENAI_BASE_URL: ${BASE_URL:-}
+      OPENAI_MODEL: ${MODEL_NAME:-}
+    networks:
+      scada_network:
+        ipv4_address: 10.10.0.11
